@@ -50,6 +50,11 @@ local function switch_item_slots(slot1, slot2, listLength)
 end
 
 local function sort_inventory()
+    if not turtle then
+        error("Sort must be performed by a turtle.")
+        return nil
+    end
+
     local unsorted_inventory = get_chest_inventory()
     local sorted_inventory = table.move(unsorted_inventory, 1, #unsorted_inventory, 1, {})
     table.sort(sorted_inventory)
