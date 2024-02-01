@@ -1,0 +1,1 @@
+print(turtle.inspect().name)
