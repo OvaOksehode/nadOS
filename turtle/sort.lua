@@ -9,10 +9,9 @@ local INTERNAL_SLOTS = 4*4
 
 local chest = peripheral.wrap("front")
 
-local function strip_modtag(input_string)
-    local _,_,output_string = string.find(input_string, ":(.+)")
-    return output_string
-end
+local string_functions = require("/nadOS.util.string")
+
+local strip_modtag = string_functions.strip_modtag
 
 local function get_chest_inventory()
     turtle.select(1)
