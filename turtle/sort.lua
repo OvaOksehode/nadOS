@@ -9,7 +9,7 @@ local INTERNAL_SLOTS = 4*4
 
 local chest = peripheral.wrap("front")
 
-local string_functions = require("/nadOS.util.string")
+local string_functions = require("../../util/string")
 
 local strip_modtag = string_functions.strip_modtag
 
