@@ -1,8 +1,8 @@
 local turtle_functions = {}
 
-turtle_functions.chop = function()
+turtle_functions.chop_tree = function()
     if not(turtle) then
-        error("Chop must be performed by a turtle.")
+        error("chop_tree must be performed by a turtle.")
     end
 
     local _,item = turtle.inspect()
