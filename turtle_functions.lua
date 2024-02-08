@@ -1,8 +1,68 @@
 local turtle_functions = {}
+turtle_functions.movement = {}
 
 local util = require("/nadOS/util")
 
 local strip_modtag = util.string.strip_modtag
+
+turtle_functions.movement.forward = function (distance)
+    if distance<0 then
+        for i = 1, distance*-1 do
+            turtle.back()
+        end
+    else
+        for i = 1, distance do
+            turtle.forward()
+        end
+    end
+end
+
+turtle_functions.movement.shift_left = function (distance)
+    local distance = distance or 1
+    turtle.turnLeft()
+    for i = 1, distance do
+        turtle.forward()
+    end
+    turtle.turnRight()
+end
+
+turtle_functions.movement.shift_right = function (distance)
+    local distance = distance or 1
+    turtle.turnRight()
+    for i = 1, distance do
+        turtle.forward()
+    end
+    turtle.turnLeft()
+end
+
+turtle_functions.movement.flip = function (times)
+    for i = 1, 2 do
+        turtle.turnLeft()
+    end
+end
+
+turtle_functions.dump_internal_storage = function ()
+
+    if not(turtle) then
+        error("dump_internal_storage must be performed by a turtle.")
+    end
+
+    for i = 1, 4^2 do
+        turtle.select(i)
+        turtle.drop()
+    end
+
+    for i = 1, 4^2 do
+        turtle.select(i)
+        local item = turtle.getItemDetail()
+        if item then
+            return false
+        end
+    end
+
+    return true
+
+end
 
 turtle_functions.chop_tree = function()
     if not(turtle) then
