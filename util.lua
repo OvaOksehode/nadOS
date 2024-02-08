@@ -4,7 +4,7 @@ util.string = {}
 
 
 util.inventory.search_internal_inventory = function()
-    print("not yet implemented")
+    error("not yet implemented")
 end
 
 util.string.strip_modtag = function(input_string)
