@@ -1,5 +1,9 @@
 local turtle_functions = {}
 
+local util = require("/nadOS/util")
+
+local strip_modtag = util.string.strip_modtag
+
 turtle_functions.chop_tree = function()
     if not(turtle) then
         error("chop_tree must be performed by a turtle.")
@@ -58,8 +62,11 @@ turtle_functions.sort_inventory = function()
         error("Sort must be performed by a turtle.")
     end
     
+    local chest = peripheral.wrap("front")
+    
     local function get_chest_inventory()
         turtle.select(1)
+
     
     
         local items_raw = chest.list()
