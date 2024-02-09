@@ -1,9 +1,35 @@
 local turtle_functions = {}
 turtle_functions.movement = {}
+turtle_functions.util = {}
+
 
 local util = require("/nadOS/util")
 
 local strip_modtag = util.string.strip_modtag
+
+--requires one free slot
+turtle_functions.util.switch_item_slots = function (slot1, slot2)
+    local chest = peripheral.wrap("front")
+    local listLength = #chest.list()
+    if slot1==slot2 or not(chest) then return end
+    
+    chest.pushItems("front", slot1, 64, listLength+1)
+    chest.pushItems("front", slot2, 64, slot1)
+    chest.pushItems("front", listLength+1, 64, slot2)
+end
+
+turtle_functions.util.get_internal_storage = function ()
+    local storage = {}
+
+    for i = 1, 4^2 do
+        turtle.select(i)
+        if turtle.getItemDetail() then
+            table.insert(storage, i, turtle.getItemDetail())
+        end
+    end
+
+    return storage
+end
 
 turtle_functions.movement.forward = function (distance)
     if distance<0 then
@@ -41,12 +67,50 @@ turtle_functions.movement.flip = function (times)
     end
 end
 
-turtle_functions.dump_internal_storage = function ()
-
+turtle_functions.dump_internal_storage = function (item_list, list_mode)
     if not(turtle) then
         error("dump_internal_storage must be performed by a turtle.")
     end
 
+    local get_internal_storage = turtle_functions.util.get_internal_storage
+
+    for key,item in pairs(get_internal_storage()) do
+        turtle.select(key)
+
+        for key, value in pairs(item_list) do
+            if item.name ~= value then
+                return
+            end
+        end
+        turtle.drop()
+    end
+    --[[
+    for key,item in pairs(get_internal_storage()) do
+        turtle.select(key)
+
+        for key, value in pairs(item_list) do
+            if item.name == value then
+                turtle.drop()
+            end
+        end
+    end
+
+
+    for key,_ in pairs(get_internal_storage()) do
+        turtle.select(key)
+        turtle.drop()
+    end
+
+    local list_mode = list_mode or "whitelist"
+
+    local internal_storage = turtle_functions.util.get_internal_storage()
+    
+    if item_list and list_mode == "whitelist" and #item_list > 0 do
+        for key, value in pairs(internal_storage) do
+            if value == 
+        end
+        return true
+    end
     for i = 1, 4^2 do
         turtle.select(i)
         turtle.drop()
@@ -61,7 +125,7 @@ turtle_functions.dump_internal_storage = function ()
     end
 
     return true
-
+--]]
 end
 
 turtle_functions.chop_tree = function()
@@ -118,6 +182,9 @@ turtle_functions.chop_tree = function()
 end
 
 turtle_functions.sort_inventory = function()
+
+    local switch_item_slots = turtle_functions.util.switch_item_slots
+
     if not(turtle) then
         error("Sort must be performed by a turtle.")
     end
@@ -139,14 +206,6 @@ turtle_functions.sort_inventory = function()
         --textutils.tabulate(items)
         turtle.select(1)
         return items_output
-    end
-
-    local function switch_item_slots(slot1, slot2, listLength)
-        if slot1==slot2 then return end
-    
-        chest.pushItems("front", slot1, 64, listLength+1)
-        chest.pushItems("front", slot2, 64, slot1)
-        chest.pushItems("front", listLength+1, 64, slot2)
     end
 
     local function lookup_slot(name, i)
@@ -172,7 +231,7 @@ turtle_functions.sort_inventory = function()
         
     print("sorting...")
     for i = 1, #sorted_inventory do
-        switch_item_slots(i, lookup_slot(sorted_inventory[i], i), #sorted_inventory)
+        switch_item_slots(i, lookup_slot(sorted_inventory[i], i))
         term.clear()
         b_time = os.clock()
         print(i.."/"..#sorted_inventory.." items sorted ("..(math.floor((b_time-a_time)*100+0.5)/100).."s)")
